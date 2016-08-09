@@ -1,0 +1,29 @@
+[user]
+	name = Shang-Wei Wang
+	email = shang-wei@pave.com
+[color]
+	ui = true
+
+[diff]
+	tool = kdiff3
+
+[difftool]
+    prompt = false
+
+[alias]
+	ll = log --pretty=format:\"%C(yellow) %h %Cgreen%ad%C(red)[%an]%C(cyan)%d %Creset%s\" --graph --date=short 
+	la = log --pretty=format:\"%C(yellow) %h %Cgreen%ad%C(red)[%an]%C(cyan)%d %Creset%s\" --graph --date=short --all
+	dt = difftool
+	dc = difftool --cached
+	dp = difftool HEAD~ HEAD
+	st = status
+	co = checkout
+	cos = "!f() { git reset HEAD \"./$1\"; git checkout -- \"./$1\"; }; f"
+	rh = reset HEAD
+	cm = commit -m
+	cma = commit -a -m
+
+[merge]
+	tool = kdiff3
+
+
