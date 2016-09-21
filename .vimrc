@@ -26,6 +26,7 @@ set laststatus=2
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'pangloss/vim-javascript'
 Plugin 'tpope/vim-repeat'
+Plugin 'tpope/vim-fugitive'
 Plugin 'mileszs/ack.vim'
 
 " All of your Plugins must be added before the following line
@@ -65,6 +66,7 @@ autocmd FileType typescript setlocal shiftwidth=2 tabstop=2
 autocmd FileType javascript setlocal shiftwidth=2 tabstop=2
 autocmd FileType html setlocal shiftwidth=2 tabstop=2
 autocmd FileType jinja setlocal shiftwidth=2 tabstop=2
+autocmd FileType scss setlocal shiftwidth=2 tabstop=2
 
 " Config
 let g:syntastic_python_pylint_args = '--rcfile=~/.pylintrc' 
@@ -86,25 +88,34 @@ let g:ctrlp_prompt_mappings = {
 
 let g:airline_theme='light'
 let g:airline#extensions#tabline#enabled = 1
+let mapleader = ","
 
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc
 
 map HH :sp<CR>:YcmCompleter GoTo<CR>
 map Hh :YcmCompleter GoTo<CR>
 map OO :NERDTreeToggle<CR> 
-nmap s <Plug>(easymotion-overwin-f2)
-nmap <space>s <Plug>(easymotion-s2)
+nmap f <Plug>(easymotion-overwin-f2)
+nmap <space>f <Plug>(easymotion-s2)
 nmap U *
 nmap M #
 "nmap  / <Plug>(easymotion-sn)
+map <Leader>l <Plug>(easymotion-lineforward)
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
+map <Leader>h <Plug>(easymotion-linebackward)
+let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
 let NERDTreeQuitOnOpen=1
 let g:EasyMotion_smartcase = 1
 let g:EasyMotion_use_smartsign_us = 1
 let g:EasyMotion_use_upper = 1
 let g:EasyMotion_keys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ;'
 let g:EasyMotion_enter_jump_first = 1
+
+nnoremap <leader>a :Ack!<space>
+
+nnoremap <C-G>b :Gblame<CR>
+nnoremap <C-G>s :Gstatus<CR>
 
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
