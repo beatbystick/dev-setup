@@ -28,6 +28,9 @@ Plugin 'pangloss/vim-javascript'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-fugitive'
 Plugin 'mileszs/ack.vim'
+Plugin 'derekwyatt/vim-scala'
+Plugin 'vim-ruby/vim-ruby'
+Plugin 'blueyed/vim-diminactive'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -61,12 +64,14 @@ set autoread
 
 set backspace=2
 set completeopt-=preview
+highlight ColorColumn ctermbg=Black guibg=#2c2d27
 
 autocmd FileType typescript setlocal shiftwidth=2 tabstop=2
 autocmd FileType javascript setlocal shiftwidth=2 tabstop=2
 autocmd FileType html setlocal shiftwidth=2 tabstop=2
 autocmd FileType jinja setlocal shiftwidth=2 tabstop=2
 autocmd FileType scss setlocal shiftwidth=2 tabstop=2
+autocmd FileType ruby setlocal shiftwidth=2 tabstop=2
 
 " Config
 let g:syntastic_python_pylint_args = '--rcfile=~/.pylintrc' 
@@ -88,15 +93,16 @@ let g:ctrlp_prompt_mappings = {
 
 let g:airline_theme='light'
 let g:airline#extensions#tabline#enabled = 1
-let mapleader = ","
+let mapleader = "\<Space>"
 
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc
 
-map HH :sp<CR>:YcmCompleter GoTo<CR>
-map Hh :YcmCompleter GoTo<CR>
-map OO :NERDTreeToggle<CR> 
-nmap f <Plug>(easymotion-overwin-f2)
-nmap <space>f <Plug>(easymotion-s2)
+noremap HH :sp<CR>:YcmCompleter GoTo<CR>
+noremap Hh :YcmCompleter GoTo<CR>
+noremap OO :NERDTreeToggle<CR> 
+nmap <Leader>c <Esc>I#<Esc>
+nmap <Leader>f <Plug>(easymotion-overwin-f2)
+nmap f <Plug>(easymotion-s2)
 nmap U *
 nmap M #
 "nmap  / <Plug>(easymotion-sn)
