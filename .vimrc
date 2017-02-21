@@ -25,12 +25,15 @@ Plugin 'leafgarland/typescript-vim'
 set laststatus=2
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'pangloss/vim-javascript'
+Plugin 'mxw/vim-jsx'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-fugitive'
 Plugin 'mileszs/ack.vim'
 Plugin 'derekwyatt/vim-scala'
 Plugin 'vim-ruby/vim-ruby'
-Plugin 'blueyed/vim-diminactive'
+Plugin 'fatih/vim-go'
+Plugin 'majutsushi/tagbar'
+Plugin 'scrooloose/nerdcommenter'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -66,12 +69,21 @@ set backspace=2
 set completeopt-=preview
 highlight ColorColumn ctermbg=Black guibg=#2c2d27
 
+let mapleader = "\<Space>"
+
 autocmd FileType typescript setlocal shiftwidth=2 tabstop=2
-autocmd FileType javascript setlocal shiftwidth=2 tabstop=2
+autocmd FileType javascript setlocal shiftwidth=4 tabstop=4 noexpandtab
+autocmd FileType jax setlocal shiftwidth=4 tabstop=4
 autocmd FileType html setlocal shiftwidth=2 tabstop=2
 autocmd FileType jinja setlocal shiftwidth=2 tabstop=2
 autocmd FileType scss setlocal shiftwidth=2 tabstop=2
 autocmd FileType ruby setlocal shiftwidth=2 tabstop=2
+
+au FileType go nmap <Leader>ds <Plug>(go-def-split)
+au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
+au FileType go nmap <Leader>dt <Plug>(go-def-tab)
+au FileType go nmap <Leader>gd <Plug>(go-doc)
+au FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
 
 " Config
 let g:syntastic_python_pylint_args = '--rcfile=~/.pylintrc' 
@@ -81,6 +93,8 @@ let g:syntastic_check_on_wq = 1
 let g:syntastic_error_symbol = "✗"
 let g:syntastic_warning_symbol = "⚠"
 let g:syntastic_python_checkers = ['pylint']
+let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
+let g:syntastic_javascript_checkers = ['eslint']
 let g:multi_cursor_exit_from_visual_mode=0
 let g:multi_cursor_exit_from_insert_mode=0
 let g:ctrlp_map = '<c-p>'
@@ -90,26 +104,27 @@ let g:ctrlp_prompt_mappings = {
 \ 'AcceptSelection("h")': ['<c-h>', '<c-x>', '<c-cr>', '<c-s>'],
 \ 'PrtCurLeft()':         ['<left>', '<c-^>'],
 \ }
+let g:jsx_ext_required = 0
 
 let g:airline_theme='light'
 let g:airline#extensions#tabline#enabled = 1
-let mapleader = "\<Space>"
 
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc
 
 noremap HH :sp<CR>:YcmCompleter GoTo<CR>
+noremap HV :vsp<CR>:YcmCompleter GoTo<CR>
 noremap Hh :YcmCompleter GoTo<CR>
-noremap OO :NERDTreeToggle<CR> 
-nmap <Leader>c <Esc>I#<Esc>
+nnoremap OO :NERDTreeToggle<CR> 
+nnoremap EE :TagbarToggle<CR> 
 nmap <Leader>f <Plug>(easymotion-overwin-f2)
 nmap f <Plug>(easymotion-s2)
 nmap U *
 nmap M #
 "nmap  / <Plug>(easymotion-sn)
 map <Leader>l <Plug>(easymotion-lineforward)
+map <Leader>h <Plug>(easymotion-linebackward)
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
-map <Leader>h <Plug>(easymotion-linebackward)
 let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
 let NERDTreeQuitOnOpen=1
 let g:EasyMotion_smartcase = 1
@@ -117,6 +132,8 @@ let g:EasyMotion_use_smartsign_us = 1
 let g:EasyMotion_use_upper = 1
 let g:EasyMotion_keys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ;'
 let g:EasyMotion_enter_jump_first = 1
+let g:go_fmt_command = "goimports"
+let g:go_list_type = "quickfix"
 
 nnoremap <leader>a :Ack!<space>
 
@@ -134,7 +151,9 @@ nnoremap <silent> <C-c> :exe "vertical resize " . ((winwidth(0) * 3/2)+5)<CR>
 nnoremap <silent> <C-m> :exe "vertical resize " . (winwidth(0) * 2/3)<CR>
 nnoremap <silent> =c :exe "resize " . ((winheight(0) * 3/2)+5)<CR>:exe "vertical resize " . ((winwidth(0) * 3/2)+5)<CR>
 
-vnoremap // y/<C-R>"<CR>"
+"vnoremap // y/\V<C-R>"<CR>
+vnoremap // y/\V<C-R>"<CR>
+vnoremap <Leader>// y:Ack! <C-R>=fnameescape(@")<CR><CR>
 
 inoremap {<CR>  {<CR>}<Esc>O
 
@@ -172,7 +191,7 @@ function! s:incsearch_config(...) abort
   \ }), get(a:, 1, {}))
 endfunction
 
-noremap <silent><expr> <SPACE>/  incsearch#go(<SID>incsearch_config())
+nnoremap <silent><expr> <SPACE>/  incsearch#go(<SID>incsearch_config())
 noremap <silent><expr> ?  incsearch#go(<SID>incsearch_config({'command': '?'}))
 
 function! s:config_easyfuzzymotion(...) abort
@@ -185,7 +204,7 @@ function! s:config_easyfuzzymotion(...) abort
   \ }), get(a:, 1, {}))
 endfunction
 
-noremap <silent><expr> / incsearch#go(<SID>config_easyfuzzymotion())
+nnoremap <silent><expr> / incsearch#go(<SID>config_easyfuzzymotion())
 
 if &diff
     highlight DiffAdd    cterm=bold ctermfg=15 ctermbg=28 gui=none guifg=bg guibg=Red
@@ -206,5 +225,6 @@ if executable('ag')
   let g:ctrlp_use_caching = 0
 endif
 
-nnoremap K :Ack! "<C-R><C-W>"<CR>
+nnoremap K *:Ack! "<C-R><C-W>"<CR>
+nnoremap KK *:Ack! "<C-R><C-W>"<CR>
 
