@@ -1,6 +1,6 @@
 [user]
 	name = Shang-Wei Wang
-	email = shang-wei@pave.com
+	email = shang-wei@asapp.com
 [color]
 	ui = true
 
@@ -11,15 +11,9 @@
     prompt = false
 
 [alias]
-	ll = log --pretty=format:\"%C(yellow) %h %Cgreen%ad%C(red)[%an]%C(cyan)%d %Creset%s\" --graph --date=short 
-	la = log --pretty=format:\"%C(yellow) %h %Cgreen%ad%C(red)[%an]%C(cyan)%d %Creset%s\" --graph --date=short --all
-	dt = difftool
-	dc = difftool --cached
+	la = log --pretty=format:\"%C(yellow) %h %Cgreen%ad%C(red)[%an]%C(auto)%d %Creset%s\" --graph --date=short --all
 	dp = difftool HEAD~ HEAD
-	st = status
-	co = checkout
 	cos = "!f() { git reset HEAD \"./$1\"; git checkout -- \"./$1\"; }; f"
-	rh = reset HEAD
 	cm = commit -m
 	cma = commit -a -m
 
@@ -27,3 +21,10 @@
 	tool = kdiff3
 
 
+[core]
+	editor = /usr/local/bin/vim
+	excludesfile = ~/.gitignore
+[url "ssh://git@github.com/"]
+	insteadOf = https://github.com/
+[url "ssh://git@github.asapp.dev/"]
+	insteadOf = https://github.asapp.dev/
