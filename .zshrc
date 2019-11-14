@@ -1,9 +1,9 @@
 # Created by newuser for 5.0.7
+export PATH=$PATH:/Users/oneway/go/bin
 export LC_CTYPE=en_US.UTF-8
 export AWS_DEFAULT_REGION=us-east-1
 export HISTCONTROL=ignorespace
-
-alias asapp='cd ~/asapp && source misc/source-asapp-dev.sh'
+export EDITOR=/usr/local/bin/vim
 
 # Load Antigen
 source /usr/local/share/antigen/antigen.zsh
@@ -60,6 +60,8 @@ alias tn='tmux new -s'
 
 # kubectl
 alias kc='kubectl'
+alias kgp='kc get pods'
+alias kd='kc describe'
 
 # docker
 alias dc='docker-compose'
@@ -70,21 +72,30 @@ alias dcd='docker-compose down'
 BASE16_SHELL=$HOME/.config/base16-shell/
 [ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
 
-function dapi {
-    if [[ "$PWD" != "$HOME/asapp" ]]; then
-        echo "Wrong directory"
-        return 0
-    fi
-	./scripts/deploy_env_component.go dev api
-}
-function die {
-    if [[ "$PWD" != "$HOME/asapp" ]]; then
-        echo "Wrong directory"
-        return 0
-    fi
-    ./scripts/deploy_env_component.go dev issueengine
-}
-
 function loop {
     while sleep "$1"; do eval "$2"; done
 }
+
+function pjs {
+    echo $1 | jq .
+}
+
+function kcdbsec {
+    kubectl get secrets api -o yaml | awk -F'secrets.json: ' '{print $2}' | base64 --decode | jq .DB
+}
+
+function mypod {
+    if [ -z "$1" ]; then
+        IFS=' ' read -r pod_name kk <<< $(kgp | grep sw-util)
+        kc exec -it "$pod_name" bash
+    else
+        echo "use namespace $1"
+        IFS=' ' read -r pod_name kk <<< $(kgp -n "$1" | grep sw-util)
+        kc exec -it "$pod_name" bash -n "$1"
+    fi
+}
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+

@@ -1,84 +1,68 @@
-set nocompatible
-filetype off
+syntax on
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+call plug#begin('~/.vim/plugged')
 
-" let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
+Plug 'w0rp/ale'
+Plug 'Lokaltog/vim-easymotion'
+Plug 'haya14busa/incsearch.vim'
+Plug 'haya14busa/incsearch-fuzzy.vim'
+Plug 'haya14busa/incsearch-easymotion.vim'
+Plug 'scrooloose/nerdtree'
+Plug 'kien/ctrlp.vim'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'itchyny/lightline.vim'
+Plug 'mxw/vim-jsx'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-fugitive'
+Plug 'mileszs/ack.vim'
+Plug 'scrooloose/nerdcommenter'
+Plug 'junegunn/gv.vim'
+Plug 'ap/vim-css-color'
+Plug 'jkerian/HiCursorWords'
+Plug 'yssl/QFEnter'
+Plug 'tpope/vim-rhubarb'
+Plug 'suan/vim-instant-markdown'
+Plug 'prettier/vim-prettier'
+Plug 'chriskempson/base16-vim'
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'ryanolsonx/vim-lsp-typescript'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'sheerun/vim-polyglot'
+Plug 'blueyed/vim-diminactive'
+Plug 'airblade/vim-gitgutter'
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh'}
 
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'w0rp/ale'
-Plugin 'haya14busa/incsearch.vim'
-Plugin 'haya14busa/incsearch-fuzzy.vim'
-Plugin 'Lokaltog/vim-easymotion'
-Plugin 'haya14busa/incsearch-easymotion.vim'
-Plugin 'scrooloose/nerdtree'
-Plugin 'kien/ctrlp.vim'
-Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'terryma/vim-multiple-cursors'
-Plugin 'bling/vim-airline'
-Plugin 'leafgarland/typescript-vim'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'pangloss/vim-javascript'
-Plugin 'mxw/vim-jsx'
-Plugin 'tpope/vim-repeat'
-Plugin 'tpope/vim-fugitive'
-Plugin 'mileszs/ack.vim'
-Plugin 'fatih/vim-go'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'ternjs/tern_for_vim'
-Plugin 'junegunn/gv.vim'
-Plugin 'ap/vim-css-color'
-Plugin 'ihacklog/HiCursorWords'
-Plugin 'yssl/QFEnter'
-Plugin 'tpope/vim-rhubarb'
-Plugin 'suan/vim-instant-markdown'
-Plugin 'prettier/vim-prettier'
-Plugin 'python-mode/python-mode'
-Plugin 'chriskempson/base16-vim'
+call plug#end()
 
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-
-behave xterm
-
+set nobackup
+set nowritebackup
 set laststatus=2
 set encoding=utf-8
-set ruler
 set ignorecase
 set smartcase
 set hlsearch
 set incsearch
 set showmatch
 set cindent
-
-set guicursor+=n-c:blinkon1
-
-syntax enable
+set updatetime=250
 
 set expandtab
 set smarttab
 set shiftwidth=4
 set tabstop=4
 
-set ai
-set si
 set wrap
 set autoread
 
 set backspace=2
-set completeopt-=preview
-set backupcopy=yes
 set pastetoggle=<F3>
 
 set diffopt+=vertical
+set completeopt+=preview
 
 let mapleader = "\<Space>"
-
-autocmd BufWritePre *.go :GoBuild
 
 autocmd FileType javascript set formatprg=prettier\ --stdin\ --trailing-comma\ es5\ --tab-width\ 4\ --single-quote
 autocmd FileType typescript set formatprg=prettier\ --stdin\ --parser\ typescript\ --trailing-comma\ es5\ --tab-width\ 4\ --single-quote
@@ -93,120 +77,121 @@ autocmd FileType jinja setlocal shiftwidth=2 tabstop=2
 autocmd FileType scss setlocal shiftwidth=4 tabstop=4
 autocmd FileType ruby setlocal shiftwidth=2 tabstop=2
 autocmd FileType yaml setlocal shiftwidth=2 tabstop=2
+autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
-au FileType go nmap <Leader>ds <Plug>(go-def-split)
-au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
-au FileType go nmap <Leader>dt <Plug>(go-def-tab)
-au FileType go nmap <Leader>gd <Plug>(go-doc)
-au FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
 
 " Config
 let g:ale_sign_error = "✗"
 let g:ale_sign_warning = "⚠"
-let g:ale_linters = {'go': ['goimports', 'golint', 'staticcheck']}
+let g:ale_linters = {
+    \ 'go': ['gofmt', 'golint', 'go vet', 'staticcheck'],
+    \ 'javascript': ['eslint'],
+    \ }
+let g:lightline = {
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'relativepath', 'modified' ] ]
+      \ }
+      \ }
 let g:ale_lint_on_enter = 0
-let g:ale_lint_on_save = 0
-" let g:syntastic_python_pylint_args = '--rcfile=~/.pylintrc' 
-" let g:syntastic_always_populate_loc_list = 1
-" let g:syntastic_check_on_open = 0
-" let g:syntastic_check_on_wq = 1
-" let g:syntastic_error_symbol = "✗"
-" let g:syntastic_warning_symbol = "⚠"
-" let g:syntastic_python_checkers = ['pylint']
-" let g:syntastic_go_checkers = ['gofmt', 'golint', 'gometalinter']
-" let g:syntastic_javascript_checkers = ['eslint']
+let g:ale_lint_on_save = 1
+
+let g:lsp_diagnostics_enabled = 0
+let g:lsp_highlight_references_enabled = 0
+let g:lsp_highlights_enabled = 0
+let g:lsp_textprop_enabled = 0
+
 let g:multi_cursor_exit_from_visual_mode=0
 let g:multi_cursor_exit_from_insert_mode=0
+
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlPMixed'
-let g:ycm_add_preview_to_completeopt = 0
 let g:ctrlp_prompt_mappings = {
-\ 'AcceptSelection("h")': ['<c-h>', '<c-x>', '<c-cr>', '<c-s>'],
-\ 'PrtCurLeft()':         ['<left>', '<c-^>'],
-\ }
-let g:jsx_ext_required = 0
-
-let g:pymode_folding = 0
-let g:pymode_lint = 0
-
-let g:airline_theme='light'
-let g:airline_powerline_fonts = 1
+    \ 'AcceptSelection("h")': ['<c-h>', '<c-x>', '<c-cr>', '<c-s>'],
+    \ 'PrtCurLeft()':         ['<left>', '<c-^>'],
+    \ }
 
 let g:qfenter_keymap = {}
 let g:qfenter_keymap.vopen = ['<C-v>']
 let g:qfenter_keymap.hopen = ['<C-CR>', '<C-h>']
 
 let NERDTreeShowHidden=1
-
-let g:prettier#autoformat = 0
-let g:prettier#config#tab_width = 4
-let g:prettier#config#trailing_comma = 'es5'
-let g:prettier#config#parser = 'typescript'
-let g:prettier#config#bracket_spacing = 'true'
-
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc
-
-nnoremap qq :q<CR>
-noremap HH :sp<CR>:YcmCompleter GoTo<CR>
-noremap HV :vsp<CR>:YcmCompleter GoTo<CR>
-noremap Hh :YcmCompleter GoTo<CR>
-nnoremap OO :NERDTreeToggle<CR> 
-nnoremap TT <C-w>T
-nmap <Leader>f <Plug>(easymotion-overwin-f2)
-nmap f <Plug>(easymotion-s2)
-nmap U *
-nmap M #
-map <Leader>l <Plug>(easymotion-lineforward)
-map <Leader>h <Plug>(easymotion-linebackward)
-map <Leader>j <Plug>(easymotion-j)
-map <Leader>k <Plug>(easymotion-k)
-let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
 let NERDTreeQuitOnOpen=1
+
+let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
 let g:EasyMotion_smartcase = 1
 let g:EasyMotion_use_smartsign_us = 1
 let g:EasyMotion_use_upper = 1
 let g:EasyMotion_keys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ;'
 let g:EasyMotion_enter_jump_first = 1
+
+let g:go_auto_type_info = 0
 let g:go_fmt_command = "goimports"
 let g:go_list_type = "quickfix"
 
+let g:github_enterprise_urls = ['https://github.asapp.dev']
+
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc
+
+nnoremap qq :q<CR>
+nnoremap OO :NERDTreeToggle<CR> 
+nnoremap TT <C-w>T
 nnoremap <leader>a :Ack!<space>
-
-noremap <C-G>b :GV!<CR>
-noremap <C-G>s :Gstatus<CR>
-
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
-
+nnoremap U *
+nnoremap M #
 nnoremap <silent> + :exe "resize " . ((winheight(0) * 3/2)+5)<CR>
 nnoremap <silent> - :exe "resize " . (winheight(0) * 2/3)<CR>
 nnoremap <silent> <C-c> :exe "vertical resize " . ((winwidth(0) * 3/2)+5)<CR>
 nnoremap <silent> <C-m> :exe "vertical resize " . (winwidth(0) * 2/3)<CR>
 nnoremap <silent> =c :exe "resize " . ((winheight(0) * 3/2)+5)<CR>:exe "vertical resize " . ((winwidth(0) * 3/2)+5)<CR>
+nnoremap KK :Ack! "<C-R><C-W>"<CR>
 
+nnoremap HH :sp<CR>:LspDefinition<CR>
+nnoremap HV :vsp<CR>:LspDefinition<CR>
+nnoremap HI :LspImplementation<CR>
+nnoremap Hh :LspDefinition<CR>
+
+noremap <C-G>b :GV!<CR>
+noremap <C-G>s :Gstatus<CR>
+
+nmap <Leader>f <Plug>(easymotion-overwin-f2)
+nmap f <Plug>(easymotion-s2)
+nmap <Leader>l <Plug>(easymotion-lineforward)
+nmap <Leader>h <Plug>(easymotion-linebackward)
+nmap <Leader>j <Plug>(easymotion-j)
+nmap <Leader>k <Plug>(easymotion-k)
+
+vnoremap fj <Esc>
 vnoremap // y/\V<C-R>"<CR>
 vnoremap <Leader>// y:Ack! <C-R>=fnameescape(@")<CR><CR>
 
 inoremap {<CR>  {<CR>}<Esc>O
-
 inoremap II <Esc>I
 inoremap AA <Esc>A
 inoremap fj <Esc>
-vnoremap fj <Esc>
-vmap s <Plug>VSurround
-
-autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
-autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 function! s:incsearch_config(...) abort
   return incsearch#util#deepextend(deepcopy({
-  \   'modules': [incsearch#config#easymotion#module({'overwin': 1})],
-  \   'keymap': {
-  \     "\<CR>": '<Over>(easymotion)'
-  \   },
-  \   'is_expr': 0
+  \   'modules': [incsearch#config#easymotion#module({'overwin': 0})],
+  \   'keymap': {"\<CR>": '<Over>(easymotion)'},
+  \   'is_expr': 0,
+  \   'is_stay': 1
   \ }), get(a:, 1, {}))
 endfunction
 
@@ -216,7 +201,7 @@ noremap <silent><expr> ?  incsearch#go(<SID>incsearch_config({'command': '?'}))
 function! s:config_easyfuzzymotion(...) abort
   return extend(copy({
   \   'converters': [incsearch#config#fuzzyword#converter()],
-  \   'modules': [incsearch#config#easymotion#module({'overwin': 1})],
+  \   'modules': [incsearch#config#easymotion#module({'overwin': 0})],
   \   'keymap': {"\<CR>": '<Over>(easymotion)'},
   \   'is_expr': 0,
   \   'is_stay': 1
@@ -245,9 +230,27 @@ if executable('ag')
   let g:ctrlp_use_caching = 0
 endif
 
-nnoremap K *:Ack! "<C-R><C-W>"<CR>
-nnoremap KK *:Ack! "<C-R><C-W>"<CR>
-
 if filereadable(expand("~/.vimrc_background"))
   source ~/.vimrc_background
 endif
+
+if executable('gopls')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'gopls',
+        \ 'cmd': {server_info->['gopls', '-mode', 'stdio']},
+        \ 'whitelist': ['go'],
+        \ })
+endif
+
+"if executable('go-langserver')
+  "au User lsp_setup call lsp#register_server({
+      "\ 'name': 'go-langserver',
+      "\ 'cmd': {server_info->['go-langserver', '-gocodecompletion']},
+      "\ 'whitelist': ['go'],
+      "\ })
+"else
+  "echohl ErrorMsg
+  "echom 'Sorry, `go-langserver` is not installed.'
+  "echohl NONE
+"endif
+
